@@ -1,6 +1,7 @@
 const express = require('express');
 //const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const db = require('./db');
 
 const app = express();
 
@@ -13,25 +14,18 @@ app.use(express.json());
     "methods": "GET,POST", //we allow only GET and POST methods
 })); */
 
-
-const db = [
-    { id: 1, author: 'John Doe', text: 'This company is worth every coin!' },
-    { id: 2, author: 'Amanda Doe', text: 'They really know how to make you happy.' },
-    { id: 3, author: 'Some Author', text: 'Some testimonial text.' },
-];
-
 app.get('/testimonials', (req, res) => {
-    res.json(db);
+    res.json(db.testimonials);
 });
 
 app.get('/testimonials/random', (req, res) => {
-    const randomIndex = Math.floor(Math.random() * db.length);
-    const randomTestimonial = db[randomIndex];
+    const randomIndex = Math.floor(Math.random() * db.testimonials.length);
+    const randomTestimonial = db.testimonials[randomIndex];
     res.json(randomTestimonial);
   });
 
 app.get('/testimonials/:id', (req, res) => {
-    const testimonial = db.find(entry => entry.id === parseInt(req.params.id));
+    const testimonial = db.testimonials.find(entry => entry.id === parseInt(req.params.id));
     if (testimonial) {
         res.json(testimonial);
     } else {
@@ -50,7 +44,7 @@ app.post('/testimonials', (req, res) => {
             author,
             text,
         };
-        db.push(newTestimonial);
+        db.testimonials.push(newTestimonial);
         res.json({ message: 'OK' });
     }
 });
@@ -58,7 +52,7 @@ app.post('/testimonials', (req, res) => {
 app.put('/testimonials/:id', (req, res) => {
     const { author, text } = req.body;
 
-    const testimonial = db.find(entry => entry.id === parseInt(req.params.id));
+    const testimonial = db.testimonials.find(entry => entry.id === parseInt(req.params.id));
     if (!testimonial) {
         res.status(404).json({ message: 'Testimonial not found' });
     } else {
@@ -69,11 +63,11 @@ app.put('/testimonials/:id', (req, res) => {
 });
 
 app.delete('/testimonials/:id', (req, res) => {
-    const index = db.findIndex(entry => entry.id === parseInt(req.params.id));
+    const index = db.testimonials.findIndex(entry => entry.id === parseInt(req.params.id));
     if (index === -1) {
         res.status(404).json({ message: 'Testimonial not found' });
     } else {
-        db.splice(index, 1);
+        db.testimonials.splice(index, 1);
         res.json({ message: 'OK' });
     }
 });
