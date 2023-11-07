@@ -37,18 +37,26 @@ const OrderTicketForm = () => {
   const submitForm = async (e) => {
     e.preventDefault();
 
+    await dispatch(loadSeatsRequest());
+
     if(order.client && order.email && order.day && order.seat) {
-      dispatch(addSeatRequest(order));
-      setOrder({
-        client: '',
-        email: '',
-        day: 1,
-        seat: '',
-      });
-      setIsError(false);
+      try {
+        await dispatch(addSeatRequest(order));
+        await dispatch(loadSeatsRequest());
+        setOrder({
+          client: '',
+          email: '',
+          day: 1,
+          seat: '',
+        });
+        setIsError(false);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        setIsError(true);
+      }
     } else {
       setIsError(true);
-    }
+    };
   }
 
   return (
