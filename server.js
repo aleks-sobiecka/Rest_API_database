@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const db = require('./db');
 
 const app = express();
@@ -12,7 +12,7 @@ const seatRoutes = require('./routes/seats.routes');
 //middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//app.use(cors());
+app.use(cors());
 /* app.use(cors({
     "origin": "https://kodilla.com", //origin sets domains that we approve
     "methods": "GET,POST", //we allow only GET and POST methods
