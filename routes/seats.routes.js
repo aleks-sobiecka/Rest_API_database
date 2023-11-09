@@ -25,10 +25,18 @@ router.route('/seats').post((req, res) => {
     if (!day || !seat || !client || !email ) {
         res.status(400).json({ message: 'One or more mandatory fields are missing.' });
     } else {
+        const parsedDay = parseInt(day);
+        const parsedSeat = parseInt(seat);
+
+        const isTaken = db.seats.some(item => item.day === parsedDay && item.seat === parsedSeat);
+        if (isTaken) {
+            return res.status(409).json({ message: 'The slot is already taken...' });
+        }
+
         const newSeat = {
             id: uuidv4(),
-            day,
-            seat, 
+            day: parsedDay,
+            seat: parsedSeat,
             client, 
             email,
         };
