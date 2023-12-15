@@ -25,6 +25,7 @@ app.use('/api', seatRoutes); // add seat routes to server
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
 
+// show app on /
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
